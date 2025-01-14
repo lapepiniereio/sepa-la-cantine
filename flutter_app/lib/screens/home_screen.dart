@@ -94,6 +94,25 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _openOutputFolder() async {
+    if (outputDirectory == null) {
+      _showMessage('❌ Aucun dossier de sortie sélectionné');
+      return;
+    }
+
+    try {
+      if (Platform.isMacOS) {
+        await Process.run('open', [outputDirectory!]);
+      } else if (Platform.isWindows) {
+        await Process.run('explorer', [outputDirectory!]);
+      } else if (Platform.isLinux) {
+        await Process.run('xdg-open', [outputDirectory!]);
+      }
+    } catch (e) {
+      _showMessage('❌ Impossible d\'ouvrir le dossier');
+    }
+  }
+
   Future<void> _processFiles() async {
     if (selectedFiles.isEmpty) {
       _showMessage('❌ Aucun fichier XML sélectionné');
@@ -170,6 +189,38 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     _showMessage('✨ Traitement terminé !');
+
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('✅ Traitement terminé'),
+            content: const Text('Les fichiers ont été convertis avec succès.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Fermer'),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _openOutputFolder();
+                },
+                icon: const Icon(Icons.folder_open),
+                label: const Text('Ouvrir le dossier'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void _resetInterface() {
