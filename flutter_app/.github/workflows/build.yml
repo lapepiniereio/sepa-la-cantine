@@ -1,0 +1,66 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Déclencher sur les tags commençant par 'v'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.5'
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable windows build
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Create Installer
+        run: |
+          Invoke-WebRequest -Uri "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe" -OutFile "innosetup.exe"
+          Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
+          $env:PATH = "$env:PATH;C:\Program Files (x86)\Inno Setup 6"
+
+          # Créer le script Inno Setup
+          @"
+          [Setup]
+          AppName=SEPA La Cantine
+          AppVersion=1.0.0
+          WizardStyle=modern
+          DefaultDirName={autopf}\SEPA La Cantine
+          DefaultGroupName=SEPA La Cantine
+          OutputBaseFilename=sepa_la_cantine_setup
+          Compression=lzma
+          SolidCompression=yes
+
+          [Files]
+          Source: "build\windows\runner\Release\*"; DestDir: "{app}"; Flags: recursesubdirs
+
+          [Icons]
+          Name: "{group}\SEPA La Cantine"; Filename: "{app}\sepa_la_cantine.exe"
+          Name: "{commondesktop}\SEPA La Cantine"; Filename: "{app}\sepa_la_cantine.exe"
+          "@ | Out-File -FilePath "installer.iss" -Encoding UTF8
+
+          # Compiler l'installateur
+          iscc "installer.iss"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            sepa_la_cantine_setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
