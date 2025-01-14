@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.02">
+  <CstmrCdtTrfInitn>
+    <GrpHdr>
+      <MsgId>MSG-02</MsgId>
+      <CreDtTm>2024-01-14T10:15:00</CreDtTm>
+      <NbOfTxs>2</NbOfTxs>
+      <InitgPty>
+        <Nm>ENTREPRISE EXEMPLE</Nm>
+      </InitgPty>
+    </GrpHdr>
+    <PmtInf>
+      <PmtInfId>PMT-2024-002</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <ReqdExctnDt>2024-01-15</ReqdExctnDt>
+      <Dbtr>
+        <Nm>ENTREPRISE EXEMPLE</Nm>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN>FR7630001007941234567890185</IBAN>
+        </Id>
+      </DbtrAcct>
+      <DbtrAgt>
+        <FinInstnId>
+          <BIC>SOGEFRPP</BIC>
+        </FinInstnId>
+      </DbtrAgt>
+      <CdtTrfTxInf>
+        <PmtId>
+          <EndToEndId>VIR-2024-002-1</EndToEndId>
+        </PmtId>
+        <Amt>
+          <InstdAmt Ccy="EUR">1500.00</InstdAmt>
+        </Amt>
+        <CdtrAgt>
+          <FinInstnId>
+            <BIC>BNPAFRPP</BIC>
+          </FinInstnId>
+        </CdtrAgt>
+        <Cdtr>
+          <Nm>MARTIN SOPHIE</Nm>
+        </Cdtr>
+        <CdtrAcct>
+          <Id>
+            <IBAN>FR7630004000031234567890144</IBAN>
+          </Id>
+        </CdtrAcct>
+      </CdtTrfTxInf>
+      <CdtTrfTxInf>
+        <PmtId>
+          <EndToEndId>VIR-2024-002-2</EndToEndId>
+        </PmtId>
+        <Amt>
+          <InstdAmt Ccy="EUR">2000.00</InstdAmt>
+        </Amt>
+        <CdtrAgt>
+          <FinInstnId>
+            <BIC>BNPAFRPP</BIC>
+          </FinInstnId>
+        </CdtrAgt>
+        <Cdtr>
+          <Nm>DUBOIS PIERRE</Nm>
+        </Cdtr>
+        <CdtrAcct>
+          <Id>
+            <IBAN>FR7630004000031234567890145</IBAN>
+          </Id>
+        </CdtrAcct>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
+</Document>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+  <!-- Manque l'espace de noms et la structure est incorrecte -->
+  <Payment>
+    <Header>
+      <MessageId>MSG-03</MessageId>
+      <DateTime>2024-01-14</DateTime>
+    </Header>
+    <Transaction>
+      <Amount>1000.00</Amount>
+      <Currency>EUR</Currency>
+      <Debtor>
+        <Name>ENTREPRISE EXEMPLE</Name>
+        <IBAN>FR7630001007941234567890185</IBAN>
+      </Debtor>
+      <Creditor>
+        <Name>DUPONT JEAN</Name>
+        <IBAN>FR7630004000031234567890143</IBAN>
+      </Creditor>
+    </Transaction>
+  </Payment>
+</Document>
