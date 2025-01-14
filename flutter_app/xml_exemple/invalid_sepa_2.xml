@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facture>
+  <entete>
+    <numero>FACT-2024-001</numero>
+    <date>2024-01-14</date>
+    <client>
+      <nom>DUPONT JEAN</nom>
+      <adresse>123 RUE EXEMPLE</adresse>
+    </client>
+  </entete>
+  <lignes>
+    <ligne>
+      <description>Article 1</description>
+      <quantite>2</quantite>
+      <prix_unitaire>100.00</prix_unitaire>
+      <total>200.00</total>
+    </ligne>
+    <ligne>
+      <description>Article 2</description>
+      <quantite>1</quantite>
+      <prix_unitaire>150.00</prix_unitaire>
+      <total>150.00</total>
+    </ligne>
+  </lignes>
+  <total_ttc>350.00</total_ttc>
+</facture>
