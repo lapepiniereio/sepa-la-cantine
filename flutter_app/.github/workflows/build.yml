@@ -22,13 +22,23 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install dependencies
+      - name: Upgrade Flutter SDK
         run: |
-          flutter doctor -v
-          flutter --version
-          flutter pub get
+          flutter upgrade
+          flutter pub upgrade
 
-      - name: Enable windows build
+      - name: Verify Flutter and Dart versions
+        run: |
+          flutter --version
+          dart --version
+
+      - name: Clean Flutter cache
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Windows build
         run: flutter config --enable-windows-desktop
 
       - name: Build Windows
@@ -40,7 +50,6 @@ jobs:
           Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
           $env:PATH = "$env:PATH;C:\Program Files (x86)\Inno Setup 6"
 
-          # Créer le script Inno Setup
           @"
           [Setup]
           AppName=SEPA La Cantine
@@ -60,7 +69,6 @@ jobs:
           Name: "{commondesktop}\SEPA La Cantine"; Filename: "{app}\sepa_la_cantine.exe"
           "@ | Out-File -FilePath "installer.iss" -Encoding UTF8
 
-          # Compiler l'installateur
           iscc "installer.iss"
 
       - name: Create Release
