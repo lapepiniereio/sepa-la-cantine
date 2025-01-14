@@ -8,6 +8,9 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: flutter_app
 
     steps:
       - uses: actions/checkout@v3
@@ -37,7 +40,7 @@ jobs:
           @"
           [Setup]
           AppName=SEPA La Cantine
-          AppVersion=0.1.0
+          AppVersion=1.0.0
           WizardStyle=modern
           DefaultDirName={autopf}\SEPA La Cantine
           DefaultGroupName=SEPA La Cantine
@@ -61,6 +64,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            sepa_la_cantine_setup.exe
+            flutter_app/sepa_la_cantine_setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
