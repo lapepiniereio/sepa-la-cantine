@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*' # Déclencher sur les tags commençant par 'v'
+      - 'v*' # Déclenchement sur les tags commençant par 'v'
 
 jobs:
   build-windows:
@@ -13,8 +13,10 @@ jobs:
         working-directory: flutter_app
 
     steps:
+      # Récupération du code source
       - uses: actions/checkout@v3
 
+      # Configuration de Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -22,34 +24,49 @@ jobs:
           channel: 'stable'
           cache: true
 
+      # Mise à jour du SDK Flutter
       - name: Upgrade Flutter SDK
         run: |
           flutter upgrade
           flutter pub upgrade
 
+      # Vérification des versions de Flutter et Dart
       - name: Verify Flutter and Dart versions
         run: |
           flutter --version
           dart --version
 
+      # Nettoyage du cache Flutter
       - name: Clean Flutter cache
         run: flutter clean
 
+      # Installation des dépendances
       - name: Install dependencies
         run: flutter pub get
 
+      # Activation de la build pour Windows
       - name: Enable Windows build
         run: flutter config --enable-windows-desktop
 
+      # Construction de la version Windows
       - name: Build Windows
         run: flutter build windows --release
 
+      # Création de l'installateur
       - name: Create Installer
         run: |
+          # Téléchargement d'Inno Setup
           Invoke-WebRequest -Uri "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe" -OutFile "innosetup.exe"
+          if (!(Test-Path -Path "innosetup.exe")) { throw "Inno Setup download failed" }
+
+          # Installation d'Inno Setup
           Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
           $env:PATH = "$env:PATH;C:\Program Files (x86)\Inno Setup 6"
 
+          # Vérification de l'installation
+          iscc --version
+
+          # Création du fichier de script Inno Setup
           @"
           [Setup]
           AppName=SEPA La Cantine
@@ -69,8 +86,15 @@ jobs:
           Name: "{commondesktop}\SEPA La Cantine"; Filename: "{app}\sepa_la_cantine.exe"
           "@ | Out-File -FilePath "installer.iss" -Encoding UTF8
 
-          iscc "installer.iss"
+          if (!(Test-Path -Path "installer.iss")) { throw "Failed to create installer script" }
 
+          # Compilation de l'installateur
+          iscc "installer.iss" 2>&1 | Out-File -FilePath "iscc.log" -Encoding UTF8
+
+          # Lecture des logs pour débogage
+          Get-Content -Path "iscc.log"
+
+      # Création de la release GitHub
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
